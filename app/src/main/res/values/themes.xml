@@ -2,7 +2,9 @@
 
     <style name="Theme.PexelsApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/red</item>
+        <item name="colorAccent">@color/red</item>
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
+
 </resources>
