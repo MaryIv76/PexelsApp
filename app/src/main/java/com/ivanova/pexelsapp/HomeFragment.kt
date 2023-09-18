@@ -8,8 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.SearchView.HORIZONTAL
 import android.widget.SearchView.OnQueryTextListener
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.ivanova.pexelsapp.RecyclerViews.TitleItemDecoration
+import com.ivanova.pexelsapp.RecyclerViews.TitlesRecyclerViewAdapter
 
 class HomeFragment : Fragment() {
 
@@ -34,6 +39,20 @@ class HomeFragment : Fragment() {
                 return false
             }
         })
+
+        val recViewTitles: RecyclerView = view.findViewById(R.id.recView_titles)
+        recViewTitles.layoutManager =
+            LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
+        recViewTitles.adapter = TitlesRecyclerViewAdapter(
+            arrayListOf<String>(
+                "Ice",
+                "Watches",
+                "Drawing",
+                "Brick Walls"
+            )
+        )
+        val titleItemMargin = resources.getDimensionPixelOffset(R.dimen.title_item_margin)
+        recViewTitles.addItemDecoration(TitleItemDecoration(titleItemMargin))
 
         return view
     }
