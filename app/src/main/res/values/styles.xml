@@ -13,4 +13,8 @@
         <item name="android:fontFamily">@font/mulish_regular</item>
         <item name="android:textSize">14sp</item>
     </style>
+
+    <style name="RoundedSquarePhoto">
+        <item name="cornerSize">20dp</item>
+    </style>
 </resources>

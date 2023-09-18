@@ -17,10 +17,10 @@ class TitleItemDecoration(private val itemMargin: Int) : RecyclerView.ItemDecora
         state: RecyclerView.State
     ) {
         with(outRect) {
-            right = if (!isLastItem(parent, view, state)) {
-                itemMargin
-            } else {
+            right = if (isLastItem(parent, view, state)) {
                 0
+            } else {
+                itemMargin
             }
         }
     }
