@@ -1,10 +1,11 @@
-package com.ivanova.pexelsapp
+package com.ivanova.pexelsapp.View
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ivanova.pexelsapp.R
 
 class BookmarksFragment : Fragment() {
 

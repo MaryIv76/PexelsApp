@@ -1,4 +1,4 @@
-package com.ivanova.pexelsapp.RecyclerViews
+package com.ivanova.pexelsapp.View.RecyclerViews
 
 import android.content.Context
 import android.view.LayoutInflater

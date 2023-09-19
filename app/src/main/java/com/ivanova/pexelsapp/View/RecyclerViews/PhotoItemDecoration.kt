@@ -1,4 +1,4 @@
-package com.ivanova.pexelsapp.RecyclerViews
+package com.ivanova.pexelsapp.View.RecyclerViews
 
 import android.graphics.Rect
 import android.view.View

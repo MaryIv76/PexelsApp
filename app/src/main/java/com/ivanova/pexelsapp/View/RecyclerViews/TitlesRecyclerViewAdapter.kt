@@ -1,4 +1,4 @@
-package com.ivanova.pexelsapp.RecyclerViews
+package com.ivanova.pexelsapp.View.RecyclerViews
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +7,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ivanova.pexelsapp.R
 
-class TitlesRecyclerViewAdapter(private val titles: List<String>) :
+class TitlesRecyclerViewAdapter() :
     RecyclerView.Adapter<TitlesRecyclerViewAdapter.MyViewHolder>() {
+
+    private var titles: List<String> = listOf()
+
+    fun setTitles(titles: List<String>) {
+        this.titles = titles
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView =
