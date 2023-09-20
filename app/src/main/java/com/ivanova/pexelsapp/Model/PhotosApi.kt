@@ -15,4 +15,11 @@ interface PhotosApi {
     @Headers(HEADER)
     @GET("curated")
     suspend fun getCuratedPhotos(@Query("per_page") number: Int): Photos
+
+    @Headers(HEADER)
+    @GET("search")
+    suspend fun getPhotosBySearch(
+        @Query("query") request: String,
+        @Query("per_page") number: Int
+    ): PhotosSearch
 }

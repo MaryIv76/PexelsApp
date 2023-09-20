@@ -12,6 +12,7 @@ class MainViewModel : ViewModel() {
 
     private val FEATURED_COLLECTIONS_NUMBER = 7
     private val CURATED_PHOTOS_NUMBER = 5
+    private val SEARCH_PHOTOS_NUMBER = 5
 
     private val titlesLiveMutable = MutableLiveData<ArrayList<String>>()
     val titlesLive: LiveData<ArrayList<String>> = titlesLiveMutable
@@ -41,6 +42,19 @@ class MainViewModel : ViewModel() {
                         curatedPhotos.add(photo.src.original)
                     }
                     photosLiveMutable.postValue(curatedPhotos)
+                }
+        }
+    }
+
+    fun findPhotos(request: String) {
+        viewModelScope.launch {
+            PhotosRepository.getPhotosBySearch(request, SEARCH_PHOTOS_NUMBER)
+                .collect { photos ->
+                    val foundPhotos: ArrayList<String> = arrayListOf()
+                    for (photo in photos.photos) {
+                        foundPhotos.add(photo.src.original)
+                    }
+                    photosLiveMutable.postValue(foundPhotos)
                 }
         }
     }
