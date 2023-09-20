@@ -11,18 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.ivanova.pexelsapp.Model.PhotoApi
 import com.ivanova.pexelsapp.R
 import com.ivanova.pexelsapp.View.RecyclerViews.PhotoItemDecoration
 import com.ivanova.pexelsapp.View.RecyclerViews.PhotosRecyclerViewAdapter
 import com.ivanova.pexelsapp.View.RecyclerViews.TitleItemDecoration
 import com.ivanova.pexelsapp.View.RecyclerViews.TitlesRecyclerViewAdapter
 import com.ivanova.pexelsapp.ViewModel.MainViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class HomeFragment : Fragment() {
 
@@ -40,6 +34,7 @@ class HomeFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+        // SEARCH
         val searchView = view.findViewById<SearchView>(R.id.search_view)
         searchView.setOnQueryTextListener(object : OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
@@ -52,8 +47,7 @@ class HomeFragment : Fragment() {
             }
         })
 
-        vm.loadTitles()
-
+        // TITLES
         val recViewTitles: RecyclerView = view.findViewById(R.id.recView_titles)
         recViewTitles.layoutManager =
             LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
@@ -65,20 +59,18 @@ class HomeFragment : Fragment() {
         vm.titlesLive.observe(this) { titles ->
             recViewTitlesAdapter.setTitles(titles)
         }
+        vm.loadTitles()
 
+        // PHOTOS
         val recViewPhotos: RecyclerView = view.findViewById(R.id.recView_photos)
-        recViewPhotos.layoutManager =
+        val photosLayoutManager: StaggeredGridLayoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        recViewPhotos.adapter = PhotosRecyclerViewAdapter(
-            requireContext(),
-            arrayListOf(
-                "https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg",
-                "https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg",
-                "https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg",
-                "https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg",
-                "https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg"
-            )
+        //photosLayoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+        recViewPhotos.layoutManager = photosLayoutManager
+        val recViewPhotosAdapter = PhotosRecyclerViewAdapter(
+            requireContext()
         )
+        recViewPhotos.adapter = recViewPhotosAdapter
         val photoItemBottomMargin =
             resources.getDimensionPixelOffset(R.dimen.photo_item_bottom_margin)
         val photoItemHorizontalMargin =
@@ -88,6 +80,11 @@ class HomeFragment : Fragment() {
                 photoItemBottomMargin, photoItemHorizontalMargin
             )
         )
+
+        vm.photosLive.observe(this) { photos ->
+            recViewPhotosAdapter.setPhotos(photos)
+        }
+        vm.loadCuratedPhotos()
 
         return view
     }

@@ -14,6 +14,7 @@ class TitlesRecyclerViewAdapter() :
 
     fun setTitles(titles: List<String>) {
         this.titles = titles
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {

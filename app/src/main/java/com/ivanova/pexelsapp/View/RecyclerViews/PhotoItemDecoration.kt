@@ -11,9 +11,7 @@ class PhotoItemDecoration(
 ) :
     RecyclerView.ItemDecoration() {
 
-    private fun isRightItem(
-        view: View,
-    ): Boolean {
+    private fun isRightItem(view: View): Boolean {
         val layoutParams: StaggeredGridLayoutManager.LayoutParams =
             view.layoutParams as StaggeredGridLayoutManager.LayoutParams
         return layoutParams.spanIndex == 1
