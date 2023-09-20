@@ -1,12 +1,13 @@
 package com.ivanova.pexelsapp.View
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.SearchView.OnQueryTextListener
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,8 @@ class HomeFragment : Fragment() {
 
     private lateinit var vm: MainViewModel
 
+    private var handler: Handler = Handler()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -33,19 +36,6 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
-
-        // SEARCH
-        val searchView = view.findViewById<SearchView>(R.id.search_view)
-        searchView.setOnQueryTextListener(object : OnQueryTextListener {
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return false
-            }
-
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                searchView.clearFocus()
-                return false
-            }
-        })
 
         // TITLES
         val recViewTitles: RecyclerView = view.findViewById(R.id.recView_titles)
@@ -65,7 +55,6 @@ class HomeFragment : Fragment() {
         val recViewPhotos: RecyclerView = view.findViewById(R.id.recView_photos)
         val photosLayoutManager: StaggeredGridLayoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        //photosLayoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
         recViewPhotos.layoutManager = photosLayoutManager
         val recViewPhotosAdapter = PhotosRecyclerViewAdapter(
             requireContext()
@@ -85,6 +74,30 @@ class HomeFragment : Fragment() {
             recViewPhotosAdapter.setPhotos(photos)
         }
         vm.loadCuratedPhotos()
+
+        // SEARCH
+        val searchView = view.findViewById<SearchView>(R.id.search_view)
+        searchView.setOnQueryTextListener(object : OnQueryTextListener {
+            override fun onQueryTextChange(newText: String?): Boolean {
+                handler.removeCallbacksAndMessages(null)
+                handler.postDelayed(object : Runnable {
+                    override fun run() {
+                        if (newText != null) {
+                            vm.findPhotos(newText)
+                        }
+                    }
+                }, 1000)
+                return true
+            }
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null) {
+                    vm.findPhotos(query)
+                }
+                searchView.clearFocus()
+                return true
+            }
+        })
 
         return view
     }

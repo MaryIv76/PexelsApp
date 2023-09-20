@@ -14,5 +14,12 @@ class PhotosRepository {
             }.flowOn(Dispatchers.IO)
                 .catch { exception -> println("!!!Exception: " + exception.message) }
         }
+
+        suspend fun getPhotosBySearch(request: String, number: Int): Flow<PhotosSearch> {
+            return flow {
+                emit(RetrofitInstance.photosApi.getPhotosBySearch(request, number))
+            }.flowOn(Dispatchers.IO)
+                .catch { exception -> println("!!!Exception: " + exception.message) }
+        }
     }
 }
