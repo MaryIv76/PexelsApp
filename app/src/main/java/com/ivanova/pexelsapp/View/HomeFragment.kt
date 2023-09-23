@@ -3,7 +3,11 @@ package com.ivanova.pexelsapp.View
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.*
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.Fragment
@@ -19,6 +23,7 @@ import com.ivanova.pexelsapp.View.RecyclerViews.TitleItemDecoration
 import com.ivanova.pexelsapp.View.RecyclerViews.TitlesRecyclerViewAdapter
 import com.ivanova.pexelsapp.ViewModel.MainViewModel
 import kotlinx.coroutines.*
+
 
 class HomeFragment : Fragment() {
 
@@ -37,6 +42,9 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+
+        val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
+        progressBar.visibility = GONE
 
         // TITLES
         val recViewTitles: RecyclerView = view.findViewById(R.id.recView_titles)
@@ -71,6 +79,14 @@ class HomeFragment : Fragment() {
             )
         )
 
+        recViewPhotosAdapter.isAllItemsVisibleLive.observe(this) { isAllItemsVisible ->
+            if (isAllItemsVisible) {
+                progressBar.visibility = GONE
+            } else {
+                progressBar.visibility = VISIBLE
+            }
+        }
+
         vm.photosLive.observe(this) { photos ->
             recViewPhotosAdapter.setPhotos(photos)
         }
@@ -104,14 +120,4 @@ class HomeFragment : Fragment() {
 
         return view
     }
-
-    suspend fun doWorld(newText: String?) = coroutineScope {
-        launch {
-            delay(1000L)
-            if (newText != null) {
-                vm.findPhotos(newText)
-            }
-        }
-    }
-
 }

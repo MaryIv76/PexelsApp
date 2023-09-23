@@ -26,6 +26,22 @@
         android:layout_below="@id/search_view"
         android:layout_marginTop="24dp" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_below="@id/recView_titles"
+        android:layout_marginTop="12dp">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:indeterminateOnly="true"
+            android:visibility="gone" />
+    </FrameLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recView_photos"
         android:layout_width="match_parent"
