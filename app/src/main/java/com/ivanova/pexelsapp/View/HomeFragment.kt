@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.SearchView.OnQueryTextListener
@@ -17,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ivanova.pexelsapp.R
-import com.ivanova.pexelsapp.View.RecyclerViews.PhotoItemDecoration
 import com.ivanova.pexelsapp.View.RecyclerViews.PhotosRecyclerViewAdapter
 import com.ivanova.pexelsapp.View.RecyclerViews.TitleItemDecoration
 import com.ivanova.pexelsapp.View.RecyclerViews.TitlesRecyclerViewAdapter
@@ -69,15 +66,6 @@ class HomeFragment : Fragment() {
             requireContext()
         )
         recViewPhotos.adapter = recViewPhotosAdapter
-        val photoItemBottomMargin =
-            resources.getDimensionPixelOffset(R.dimen.photo_item_bottom_margin)
-        val photoItemHorizontalMargin =
-            resources.getDimensionPixelOffset(R.dimen.photo_item_horizontal_margin)
-        recViewPhotos.addItemDecoration(
-            PhotoItemDecoration(
-                photoItemBottomMargin, photoItemHorizontalMargin
-            )
-        )
 
         recViewPhotosAdapter.isAllItemsVisibleLive.observe(this) { isAllItemsVisible ->
             if (isAllItemsVisible) {
