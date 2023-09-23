@@ -44,6 +44,7 @@ class PhotosRecyclerViewAdapter(private val context: Context) :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         Glide.with(context)
             .load(photos[position])
+            .placeholder(R.drawable.placeholder)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
