@@ -1,7 +1,6 @@
 package com.ivanova.pexelsapp.View
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import android.widget.SearchView
 import android.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -18,12 +18,13 @@ import com.ivanova.pexelsapp.View.RecyclerViews.PhotosRecyclerViewAdapter
 import com.ivanova.pexelsapp.View.RecyclerViews.TitleItemDecoration
 import com.ivanova.pexelsapp.View.RecyclerViews.TitlesRecyclerViewAdapter
 import com.ivanova.pexelsapp.ViewModel.MainViewModel
+import kotlinx.coroutines.*
 
 class HomeFragment : Fragment() {
 
     private lateinit var vm: MainViewModel
 
-    private var handler: Handler = Handler()
+    private lateinit var textChangedJob: Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,14 +80,16 @@ class HomeFragment : Fragment() {
         val searchView = view.findViewById<SearchView>(R.id.search_view)
         searchView.setOnQueryTextListener(object : OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
-                handler.removeCallbacksAndMessages(null)
-                handler.postDelayed(object : Runnable {
-                    override fun run() {
-                        if (newText != null) {
-                            vm.findPhotos(newText)
-                        }
+                if (this@HomeFragment::textChangedJob.isInitialized) {
+                    textChangedJob.cancel()
+                }
+
+                textChangedJob = lifecycleScope.launch {
+                    delay(1500L)
+                    if (newText != null) {
+                        vm.findPhotos(newText)
                     }
-                }, 1000)
+                }
                 return true
             }
 
@@ -100,6 +103,15 @@ class HomeFragment : Fragment() {
         })
 
         return view
+    }
+
+    suspend fun doWorld(newText: String?) = coroutineScope {
+        launch {
+            delay(1000L)
+            if (newText != null) {
+                vm.findPhotos(newText)
+            }
+        }
     }
 
 }
