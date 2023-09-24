@@ -12,6 +12,8 @@ class TitlesRecyclerViewAdapter() :
 
     private var titles: List<String> = listOf()
 
+    var onItemClick: ((String) -> Unit)? = null
+
     fun setTitles(titles: List<String>) {
         this.titles = titles
         notifyDataSetChanged()
@@ -25,6 +27,10 @@ class TitlesRecyclerViewAdapter() :
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.tvTitle.text = titles[position]
+
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(titles[position])
+        }
     }
 
     override fun getItemCount(): Int {

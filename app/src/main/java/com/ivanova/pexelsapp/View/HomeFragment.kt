@@ -40,11 +40,18 @@ class HomeFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+
         val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
+        val recViewTitles: RecyclerView = view.findViewById(R.id.recView_titles)
+        val recViewPhotos: RecyclerView = view.findViewById(R.id.recView_photos)
+        val searchView = view.findViewById<SearchView>(R.id.search_view)
+
+
+        // PROGRESS BAR
         progressBar.visibility = GONE
 
+
         // TITLES
-        val recViewTitles: RecyclerView = view.findViewById(R.id.recView_titles)
         recViewTitles.layoutManager =
             LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
         val recViewTitlesAdapter = TitlesRecyclerViewAdapter()
@@ -52,13 +59,18 @@ class HomeFragment : Fragment() {
         val titleItemMargin = resources.getDimensionPixelOffset(R.dimen.title_item_margin)
         recViewTitles.addItemDecoration(TitleItemDecoration(titleItemMargin))
 
+        recViewTitlesAdapter.onItemClick = { title ->
+            vm.findPhotos(title)
+            searchView.setQuery(title, false)
+        }
+
         vm.titlesLive.observe(this) { titles ->
             recViewTitlesAdapter.setTitles(titles)
         }
         vm.loadTitles()
 
+
         // PHOTOS
-        val recViewPhotos: RecyclerView = view.findViewById(R.id.recView_photos)
         val photosLayoutManager: StaggeredGridLayoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         recViewPhotos.layoutManager = photosLayoutManager
@@ -80,8 +92,8 @@ class HomeFragment : Fragment() {
         }
         vm.loadCuratedPhotos()
 
+
         // SEARCH
-        val searchView = view.findViewById<SearchView>(R.id.search_view)
         searchView.setOnQueryTextListener(object : OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (this@HomeFragment::textChangedJob.isInitialized) {
