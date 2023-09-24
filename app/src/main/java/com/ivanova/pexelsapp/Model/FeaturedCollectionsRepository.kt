@@ -13,7 +13,6 @@ class FeaturedCollectionsRepository {
             return flow {
                 emit(RetrofitInstance.featuredCollectionsApi.getFeaturedCollections(number))
             }.flowOn(Dispatchers.IO)
-                .catch { exception -> println("!!!Exception: " + exception.message) }
         }
     }
 }
