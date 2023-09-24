@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.SearchView.OnQueryTextListener
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -54,7 +55,7 @@ class HomeFragment : Fragment() {
         // TITLES
         recViewTitles.layoutManager =
             LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
-        val recViewTitlesAdapter = TitlesRecyclerViewAdapter()
+        val recViewTitlesAdapter = TitlesRecyclerViewAdapter(requireContext())
         recViewTitles.adapter = recViewTitlesAdapter
         val titleItemMargin = resources.getDimensionPixelOffset(R.dimen.title_item_margin)
         recViewTitles.addItemDecoration(TitleItemDecoration(titleItemMargin))
@@ -68,6 +69,10 @@ class HomeFragment : Fragment() {
             recViewTitlesAdapter.setTitles(titles)
         }
         vm.loadTitles()
+
+        vm.currentSearchRequestLive.observe(this) { request ->
+            recViewTitlesAdapter.setCurrentRequest(request)
+        }
 
 
         // PHOTOS
@@ -120,4 +125,5 @@ class HomeFragment : Fragment() {
 
         return view
     }
+
 }

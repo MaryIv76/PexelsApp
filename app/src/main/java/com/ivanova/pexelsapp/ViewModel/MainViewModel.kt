@@ -14,6 +14,9 @@ class MainViewModel : ViewModel() {
     private val CURATED_PHOTOS_NUMBER = 5
     private val SEARCH_PHOTOS_NUMBER = 5
 
+    private val currentSearchRequestLiveMutable = MutableLiveData<String>()
+    val currentSearchRequestLive: LiveData<String> = currentSearchRequestLiveMutable
+
     private val titlesLiveMutable = MutableLiveData<ArrayList<String>>()
     val titlesLive: LiveData<ArrayList<String>> = titlesLiveMutable
 
@@ -47,6 +50,8 @@ class MainViewModel : ViewModel() {
     }
 
     fun findPhotos(request: String) {
+        currentSearchRequestLiveMutable.postValue(request)
+
         viewModelScope.launch {
             PhotosRepository.getPhotosBySearch(request, SEARCH_PHOTOS_NUMBER)
                 .collect { photos ->

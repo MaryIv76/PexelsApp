@@ -14,6 +14,12 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="TitleActiveStyle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/mulish_regular</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <style name="RoundedSquarePhoto">
         <item name="cornerSize">20dp</item>
     </style>
