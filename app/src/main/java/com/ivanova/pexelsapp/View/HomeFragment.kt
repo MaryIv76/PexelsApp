@@ -1,25 +1,22 @@
 package com.ivanova.pexelsapp.View
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import android.widget.SearchView
+import android.widget.*
 import android.widget.SearchView.OnQueryTextListener
-import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.marginTop
-import androidx.core.view.setMargins
+import android.widget.Toast.LENGTH_LONG
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.ivanova.pexelsapp.Model.RetrofitInstance
 import com.ivanova.pexelsapp.R
 import com.ivanova.pexelsapp.View.RecyclerViews.PhotosRecyclerViewAdapter
 import com.ivanova.pexelsapp.View.RecyclerViews.TitleItemDecoration
@@ -37,6 +34,8 @@ class HomeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        RetrofitInstance.Companion.setContext(requireContext())
+
         vm = ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
@@ -52,6 +51,8 @@ class HomeFragment : Fragment() {
         val recViewPhotos: RecyclerView = view.findViewById(R.id.recView_photos)
         val searchView: SearchView = view.findViewById(R.id.search_view)
         val tvExplore: TextView = view.findViewById(R.id.tv_explore)
+        val networkStubLayout: RelativeLayout = view.findViewById(R.id.relLayout_networkStub)
+        val tvTryAgain: TextView = view.findViewById(R.id.tv_tryAgain)
 
 
         // PROGRESS BAR
@@ -67,8 +68,8 @@ class HomeFragment : Fragment() {
         recViewTitles.addItemDecoration(TitleItemDecoration(titleItemMargin))
 
         recViewTitlesAdapter.onItemClick = { title ->
-            vm.findPhotos(title)
-            searchView.setQuery(title, false)
+            //vm.findPhotos(title)
+            searchView.setQuery(title, true)
         }
 
         vm.titlesLive.observe(this) { titles ->
@@ -84,7 +85,12 @@ class HomeFragment : Fragment() {
                 recViewTitles.visibility = VISIBLE
 
                 val params = recViewTitles.layoutParams as ViewGroup.MarginLayoutParams
-                params.setMargins(0, resources.getDimension(R.dimen.titles_top_margin).toInt(), 0, 0)
+                params.setMargins(
+                    0,
+                    resources.getDimension(R.dimen.titles_top_margin).toInt(),
+                    0,
+                    0
+                )
                 recViewTitles.layoutParams = params
             }
         }
@@ -113,7 +119,7 @@ class HomeFragment : Fragment() {
         }
 
         vm.photosLive.observe(this) { photos ->
-            val stubLayout: RelativeLayout = view.findViewById(R.id.relLayout_Stub)
+            val stubLayout: RelativeLayout = view.findViewById(R.id.relLayout_stub)
             recViewPhotosAdapter.setPhotos(photos)
             if (photos.size == 0) {
                 stubLayout.visibility = VISIBLE
@@ -141,6 +147,10 @@ class HomeFragment : Fragment() {
             }
 
             override fun onQueryTextSubmit(query: String?): Boolean {
+                if (this@HomeFragment::textChangedJob.isInitialized) {
+                    textChangedJob.cancel()
+                }
+
                 if (query != null) {
                     vm.findPhotos(query)
                 }
@@ -154,6 +164,52 @@ class HomeFragment : Fragment() {
         tvExplore.setOnClickListener {
             vm.loadCuratedPhotos()
             searchView.setQuery("", false)
+        }
+
+
+        // NETWORK STUB
+        vm.noInternetConnectionLive.observe(this) { noNetwork ->
+            if (noNetwork) {
+                networkStubLayout.visibility = VISIBLE
+                progressBar.visibility = GONE
+                recViewPhotos.visibility = GONE
+            } else {
+                networkStubLayout.visibility = GONE
+                progressBar.visibility = VISIBLE
+                recViewPhotos.visibility = VISIBLE
+
+                if (recViewTitles.isGone) {
+                    vm.loadTitles()
+                }
+            }
+        }
+
+        tvTryAgain.setOnClickListener {
+            progressBar.visibility = VISIBLE
+
+            val request: String = searchView.query.toString().trim()
+            if (request == "") {
+                vm.loadCuratedPhotos()
+            } else {
+                vm.findPhotos(request)
+            }
+        }
+
+
+        // NETWORK REQUEST ERROR
+        vm.errorRequestLive.observe(this) { isRequestError ->
+            if (isRequestError) {
+                val toast = Toast.makeText(requireContext(), R.string.request_error, LENGTH_LONG)
+                toast.show()
+            }
+        }
+
+        vm.someNetworkErrorLive.observe(this) { isSomeNetworkError ->
+            if (isSomeNetworkError) {
+                val toast =
+                    Toast.makeText(requireContext(), R.string.network_request_error, LENGTH_LONG)
+                toast.show()
+            }
         }
 
         return view
