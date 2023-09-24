@@ -3,4 +3,5 @@
     <dimen name="title_item_margin">11dp</dimen>
     <dimen name="photo_item_horizontal_margin">8dp</dimen>
     <dimen name="photo_item_bottom_margin">15dp</dimen>
+    <dimen name="titles_top_margin">24dp</dimen>
 </resources>

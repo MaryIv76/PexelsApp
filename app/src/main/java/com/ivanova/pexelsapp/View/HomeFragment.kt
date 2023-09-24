@@ -1,6 +1,7 @@
 package com.ivanova.pexelsapp.View
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
@@ -11,6 +12,8 @@ import android.widget.SearchView
 import android.widget.SearchView.OnQueryTextListener
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.marginTop
+import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -70,6 +73,20 @@ class HomeFragment : Fragment() {
 
         vm.titlesLive.observe(this) { titles ->
             recViewTitlesAdapter.setTitles(titles)
+
+            if (titles.size == 0) {
+                recViewTitles.visibility = GONE
+
+                val params = recViewTitles.layoutParams as ViewGroup.MarginLayoutParams
+                params.setMargins(0, 0, 0, 0)
+                recViewTitles.layoutParams = params
+            } else {
+                recViewTitles.visibility = VISIBLE
+
+                val params = recViewTitles.layoutParams as ViewGroup.MarginLayoutParams
+                params.setMargins(0, resources.getDimension(R.dimen.titles_top_margin).toInt(), 0, 0)
+                recViewTitles.layoutParams = params
+            }
         }
         vm.loadTitles()
 
