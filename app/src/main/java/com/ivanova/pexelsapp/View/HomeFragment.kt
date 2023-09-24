@@ -6,8 +6,10 @@ import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.SearchView
 import android.widget.SearchView.OnQueryTextListener
+import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -45,7 +47,8 @@ class HomeFragment : Fragment() {
         val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
         val recViewTitles: RecyclerView = view.findViewById(R.id.recView_titles)
         val recViewPhotos: RecyclerView = view.findViewById(R.id.recView_photos)
-        val searchView = view.findViewById<SearchView>(R.id.search_view)
+        val searchView: SearchView = view.findViewById(R.id.search_view)
+        val tvExplore: TextView = view.findViewById(R.id.tv_explore)
 
 
         // PROGRESS BAR
@@ -55,7 +58,7 @@ class HomeFragment : Fragment() {
         // TITLES
         recViewTitles.layoutManager =
             LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
-        val recViewTitlesAdapter = TitlesRecyclerViewAdapter(requireContext())
+        val recViewTitlesAdapter = TitlesRecyclerViewAdapter()
         recViewTitles.adapter = recViewTitlesAdapter
         val titleItemMargin = resources.getDimensionPixelOffset(R.dimen.title_item_margin)
         recViewTitles.addItemDecoration(TitleItemDecoration(titleItemMargin))
@@ -93,7 +96,13 @@ class HomeFragment : Fragment() {
         }
 
         vm.photosLive.observe(this) { photos ->
+            val stubLayout: RelativeLayout = view.findViewById(R.id.relLayout_Stub)
             recViewPhotosAdapter.setPhotos(photos)
+            if (photos.size == 0) {
+                stubLayout.visibility = VISIBLE
+            } else {
+                stubLayout.visibility = GONE
+            }
         }
         vm.loadCuratedPhotos()
 
@@ -122,6 +131,13 @@ class HomeFragment : Fragment() {
                 return true
             }
         })
+
+
+        // STUB
+        tvExplore.setOnClickListener {
+            vm.loadCuratedPhotos()
+            searchView.setQuery("", false)
+        }
 
         return view
     }

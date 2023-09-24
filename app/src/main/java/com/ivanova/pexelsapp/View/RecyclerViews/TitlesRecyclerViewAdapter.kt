@@ -1,6 +1,5 @@
 package com.ivanova.pexelsapp.View.RecyclerViews
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ivanova.pexelsapp.R
 
 
-class TitlesRecyclerViewAdapter(private val context: Context) :
+class TitlesRecyclerViewAdapter() :
     RecyclerView.Adapter<TitlesRecyclerViewAdapter.MyViewHolder>() {
 
     private var titles: List<String> = listOf()

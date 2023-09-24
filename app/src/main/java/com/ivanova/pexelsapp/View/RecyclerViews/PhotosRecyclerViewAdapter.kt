@@ -31,7 +31,7 @@ class PhotosRecyclerViewAdapter(private val context: Context) :
     fun setPhotos(photos: List<String>) {
         this.photos = photos
         this.counter = 0
-        isAllItemsVisibleLiveMutable.postValue(false)
+        isAllItemsVisibleLiveMutable.postValue(this.photos.size == this.counter)
         notifyDataSetChanged()
     }
 
