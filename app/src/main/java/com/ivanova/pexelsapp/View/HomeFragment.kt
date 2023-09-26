@@ -110,8 +110,8 @@ class HomeFragment : Fragment() {
         )
         recViewPhotos.adapter = recViewPhotosAdapter
 
-        recViewPhotosAdapter.onItemClick = {
-            findNavController().navigate(R.id.action_homeFragment_to_detailsFragment)
+        recViewPhotosAdapter.onItemClick = { photoId ->
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToDetailsFragment(photoId))
         }
 
         recViewPhotosAdapter.isAllItemsVisibleLive.observe(this) { isAllItemsVisible ->
@@ -146,7 +146,7 @@ class HomeFragment : Fragment() {
 
                 textChangedJob = lifecycleScope.launch {
                     delay(1500L)
-                    if (newText != null) {
+                    if (newText != null && newText != "") {
                         vm.findPhotos(newText)
                     }
                 }
@@ -158,7 +158,7 @@ class HomeFragment : Fragment() {
                     textChangedJob.cancel()
                 }
 
-                if (query != null) {
+                if (query != null && query != "") {
                     vm.findPhotos(query)
                 }
                 searchView.clearFocus()

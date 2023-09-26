@@ -29,7 +29,7 @@ class PhotosRecyclerViewAdapter(private val context: Context) :
     private val isAllItemsVisibleLiveMutable = MutableLiveData<Boolean>(false)
     val isAllItemsVisibleLive: LiveData<Boolean> = isAllItemsVisibleLiveMutable
 
-    var onItemClick: (() -> Unit)? = null
+    var onItemClick: ((Int) -> Unit)? = null
 
     fun setPhotos(photos: List<Photo>) {
         this.photos = photos
@@ -47,7 +47,7 @@ class PhotosRecyclerViewAdapter(private val context: Context) :
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.itemView.setOnClickListener {
-            onItemClick?.invoke()
+            onItemClick?.invoke(photos[position].id)
         }
 
         Glide.with(context)

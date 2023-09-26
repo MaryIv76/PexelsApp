@@ -7,11 +7,16 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavArgs
+import androidx.navigation.Navigation
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import com.ivanova.pexelsapp.R
 
-class DetailsFragment: Fragment() {
+class DetailsFragment : Fragment() {
+
+    val args: DetailsFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,11 +28,12 @@ class DetailsFragment: Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_details, container, false)
 
+        val photoId: Int = args.photoId
 
         val backBtn: ImageButton = view.findViewById(R.id.btn_back)
 
 
-        backBtn.setOnClickListener{
+        backBtn.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
