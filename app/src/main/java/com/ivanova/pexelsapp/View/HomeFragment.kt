@@ -131,7 +131,10 @@ class HomeFragment : Fragment() {
                 stubLayout.visibility = GONE
             }
         }
-        vm.loadCuratedPhotos()
+
+        if (vm.currentSearchRequestLive.value == null || vm.currentSearchRequestLive.value.toString() == "") {
+            vm.loadCuratedPhotos()
+        }
 
 
         // SEARCH

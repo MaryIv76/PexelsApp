@@ -22,7 +22,7 @@
 
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="com.ivanova.pexelsapp.View.Details"
+        android:name="com.ivanova.pexelsapp.View.DetailsFragment"
         android:label="@string/details"
-        tools:layout="@layout/details" />
+        tools:layout="@layout/fragment_details" />
 </navigation>
