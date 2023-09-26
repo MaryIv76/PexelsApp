@@ -17,12 +17,13 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.ivanova.pexelsapp.Model.Photo
 import com.ivanova.pexelsapp.R
 
 class PhotosRecyclerViewAdapter(private val context: Context) :
     RecyclerView.Adapter<PhotosRecyclerViewAdapter.MyViewHolder>() {
 
-    private var photos: List<String> = listOf()
+    private var photos: List<Photo> = listOf()
     private var counter: Int = 0
 
     private val isAllItemsVisibleLiveMutable = MutableLiveData<Boolean>(false)
@@ -30,7 +31,7 @@ class PhotosRecyclerViewAdapter(private val context: Context) :
 
     var onItemClick: (() -> Unit)? = null
 
-    fun setPhotos(photos: List<String>) {
+    fun setPhotos(photos: List<Photo>) {
         this.photos = photos
         this.counter = 0
         isAllItemsVisibleLiveMutable.postValue(this.photos.size == this.counter)
@@ -50,7 +51,7 @@ class PhotosRecyclerViewAdapter(private val context: Context) :
         }
 
         Glide.with(context)
-            .load(photos[position])
+            .load(photos[position].src.original)
             .placeholder(R.drawable.placeholder)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(

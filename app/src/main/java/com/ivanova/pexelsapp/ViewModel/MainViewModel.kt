@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivanova.pexelsapp.Model.Exceptions.NoConnectivityException
 import com.ivanova.pexelsapp.Model.FeaturedCollectionsRepository
+import com.ivanova.pexelsapp.Model.Photo
 import com.ivanova.pexelsapp.Model.PhotosRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -34,8 +35,8 @@ class MainViewModel : ViewModel() {
     private val titlesLiveMutable = MutableLiveData<ArrayList<String>>()
     val titlesLive: LiveData<ArrayList<String>> = titlesLiveMutable
 
-    private val photosLiveMutable = MutableLiveData<ArrayList<String>>()
-    val photosLive: LiveData<ArrayList<String>> = photosLiveMutable
+    private val photosLiveMutable = MutableLiveData<ArrayList<Photo>>()
+    val photosLive: LiveData<ArrayList<Photo>> = photosLiveMutable
 
     fun loadTitles() {
         viewModelScope.launch {
@@ -64,11 +65,7 @@ class MainViewModel : ViewModel() {
                     handleExceptions(exception as Exception)
                 }
                 .collect { photos ->
-                    val curatedPhotos: ArrayList<String> = arrayListOf()
-                    for (photo in photos.photos) {
-                        curatedPhotos.add(photo.src.original)
-                    }
-                    photosLiveMutable.postValue(curatedPhotos)
+                    photosLiveMutable.postValue(photos.photos as ArrayList<Photo>?)
 
                     noInternetConnectionLiveMutable.postValue(false)
                     errorRequestLiveMutable.postValue(false)
@@ -86,11 +83,7 @@ class MainViewModel : ViewModel() {
                     handleExceptions(exception as Exception)
                 }
                 .collect { photos ->
-                    val foundPhotos: ArrayList<String> = arrayListOf()
-                    for (photo in photos.photos) {
-                        foundPhotos.add(photo.src.original)
-                    }
-                    photosLiveMutable.postValue(foundPhotos)
+                    photosLiveMutable.postValue(photos.photos as ArrayList<Photo>?)
 
                     noInternetConnectionLiveMutable.postValue(false)
                     errorRequestLiveMutable.postValue(false)
