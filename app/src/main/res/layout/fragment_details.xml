@@ -26,6 +26,22 @@
 
     </RelativeLayout>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_below="@id/relLayout_topBar"
+        android:layout_marginTop="14dp">
+
+        <ProgressBar
+            android:id="@+id/progressBarDetails"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:indeterminateOnly="true"
+            android:visibility="gone" />
+    </FrameLayout>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView_photo"
         android:layout_width="match_parent"
