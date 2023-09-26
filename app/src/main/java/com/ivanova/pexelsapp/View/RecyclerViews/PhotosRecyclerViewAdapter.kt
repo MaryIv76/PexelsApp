@@ -28,6 +28,8 @@ class PhotosRecyclerViewAdapter(private val context: Context) :
     private val isAllItemsVisibleLiveMutable = MutableLiveData<Boolean>(false)
     val isAllItemsVisibleLive: LiveData<Boolean> = isAllItemsVisibleLiveMutable
 
+    var onItemClick: (() -> Unit)? = null
+
     fun setPhotos(photos: List<String>) {
         this.photos = photos
         this.counter = 0
@@ -43,6 +45,10 @@ class PhotosRecyclerViewAdapter(private val context: Context) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke()
+        }
+
         Glide.with(context)
             .load(photos[position])
             .placeholder(R.drawable.placeholder)

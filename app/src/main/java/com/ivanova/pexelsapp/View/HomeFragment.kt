@@ -9,10 +9,11 @@ import android.widget.*
 import android.widget.SearchView.OnQueryTextListener
 import android.widget.Toast.LENGTH_LONG
 import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -68,7 +69,6 @@ class HomeFragment : Fragment() {
         recViewTitles.addItemDecoration(TitleItemDecoration(titleItemMargin))
 
         recViewTitlesAdapter.onItemClick = { title ->
-            //vm.findPhotos(title)
             searchView.setQuery(title, true)
         }
 
@@ -109,6 +109,10 @@ class HomeFragment : Fragment() {
             requireContext()
         )
         recViewPhotos.adapter = recViewPhotosAdapter
+
+        recViewPhotosAdapter.onItemClick = {
+            findNavController().navigate(R.id.action_homeFragment_to_detailsFragment)
+        }
 
         recViewPhotosAdapter.isAllItemsVisibleLive.observe(this) { isAllItemsVisible ->
             if (isAllItemsVisible) {

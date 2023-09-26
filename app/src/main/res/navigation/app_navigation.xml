@@ -9,10 +9,20 @@
         android:id="@+id/homeFragment"
         android:name="com.ivanova.pexelsapp.View.HomeFragment"
         android:label="@string/home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/bookmarksFragment"
         android:name="com.ivanova.pexelsapp.View.BookmarksFragment"
         android:label="@string/bookmark"
         tools:layout="@layout/fragment_bookmarks" />
+
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.ivanova.pexelsapp.View.Details"
+        android:label="@string/details"
+        tools:layout="@layout/details" />
 </navigation>
