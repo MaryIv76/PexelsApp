@@ -38,6 +38,9 @@ class MainViewModel : ViewModel() {
     private val photosLiveMutable = MutableLiveData<ArrayList<Photo>>()
     val photosLive: LiveData<ArrayList<Photo>> = photosLiveMutable
 
+    private val photoDetailsLiveMutable = MutableLiveData<Photo>()
+    val photoDetailsLive: LiveData<Photo> = photoDetailsLiveMutable
+
     fun loadTitles() {
         viewModelScope.launch {
             FeaturedCollectionsRepository.getFeaturedCollections(FEATURED_COLLECTIONS_NUMBER)
@@ -88,6 +91,18 @@ class MainViewModel : ViewModel() {
                     noInternetConnectionLiveMutable.postValue(false)
                     errorRequestLiveMutable.postValue(false)
                     someNetworkErrorLiveMutable.postValue(false)
+                }
+        }
+    }
+
+    fun loadPhotoById(photoId: Int) {
+        viewModelScope.launch {
+            PhotosRepository.getPhotoById(photoId)
+                .catch { exception ->
+                    handleExceptions(exception as Exception)
+                }
+                .collect { photo ->
+                    photoDetailsLiveMutable.postValue(photo)
                 }
         }
     }

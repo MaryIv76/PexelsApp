@@ -8,6 +8,12 @@ import kotlinx.coroutines.flow.flowOn
 
 class PhotosRepository {
     companion object {
+        suspend fun getPhotoById(id: Int): Flow<Photo> {
+            return flow {
+                emit(RetrofitInstance.photosApi.getPhotoById(id))
+            }.flowOn(Dispatchers.IO)
+        }
+
         suspend fun getCuratedPhotos(number: Int): Flow<Photos> {
             return flow {
                 emit(RetrofitInstance.photosApi.getCuratedPhotos(number))
