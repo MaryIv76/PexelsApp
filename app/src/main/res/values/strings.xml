@@ -10,4 +10,5 @@
     <string name="network_request_error">Network Request Error</string>
     <string name="details">Details</string>
     <string name="download">Download</string>
+    <string name="image_not_found">Image not found</string>
 </resources>

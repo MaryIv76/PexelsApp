@@ -1,7 +1,6 @@
 package com.ivanova.pexelsapp.View
 
 import android.Manifest
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -16,10 +15,12 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -46,6 +47,10 @@ class DetailsFragment : Fragment() {
     private lateinit var photo: Photo
 
     private lateinit var progressBar: ProgressBar
+    private lateinit var relLayoutBottom: RelativeLayout
+    private lateinit var cardViewPhoto: CardView
+    private lateinit var tvPhotographer: TextView
+    private lateinit var relLayoutStub: RelativeLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,11 +67,18 @@ class DetailsFragment : Fragment() {
 
 
         val backBtn: ImageButton = view.findViewById(R.id.btn_back)
-        val tvPhotographer: TextView = view.findViewById(R.id.tv_photographer)
+        tvPhotographer = view.findViewById(R.id.tv_photographer)
         val imViewPhoto: ImageView = view.findViewById(R.id.imView_photo)
         val btnDownload: ImageButton = view.findViewById(R.id.btn_download)
+        val btnBookmark: ImageButton = view.findViewById(R.id.btn_bookmark)
+        val btnExplore: TextView = view.findViewById(R.id.tv_detailsExplore)
         progressBar = view.findViewById(R.id.progressBarDetails)
+        relLayoutBottom = view.findViewById(R.id.relLayout_bottomElements)
+        cardViewPhoto = view.findViewById(R.id.cardView_photo)
+        relLayoutStub = view.findViewById(R.id.relLayout_detailsStub)
 
+
+        hideStub()
 
         // PROGRESS BAR
         progressBar.visibility = View.VISIBLE
@@ -145,6 +157,28 @@ class DetailsFragment : Fragment() {
             }
         }
 
+
+        // Image not found stub
+        vm.noInternetConnectionLive.observe(this) { noNetwork ->
+            if (noNetwork) {
+                showStub()
+            }
+        }
+        vm.errorRequestLive.observe(this) { isRequestError ->
+            if (isRequestError) {
+                showStub()
+            }
+        }
+        vm.someNetworkErrorLive.observe(this) { isSomeNetworkError ->
+            if (isSomeNetworkError) {
+                showStub()
+            }
+        }
+
+        btnExplore.setOnClickListener {
+            findNavController().navigate(DetailsFragmentDirections.actionDetailsFragmentToHomeFragment())
+        }
+
         return view
     }
 
@@ -172,5 +206,23 @@ class DetailsFragment : Fragment() {
                 progressBar.visibility = GONE
             }
         }
+    }
+
+    private fun showStub() {
+        relLayoutStub.visibility = VISIBLE
+
+        relLayoutBottom.visibility = GONE
+        tvPhotographer.visibility = GONE
+        cardViewPhoto.visibility = GONE
+        progressBar.visibility = GONE
+    }
+
+    private fun hideStub() {
+        relLayoutStub.visibility = GONE
+
+        relLayoutBottom.visibility = VISIBLE
+        tvPhotographer.visibility = VISIBLE
+        cardViewPhoto.visibility = VISIBLE
+        progressBar.visibility = VISIBLE
     }
 }

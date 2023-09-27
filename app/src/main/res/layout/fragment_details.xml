@@ -94,4 +94,33 @@
             android:layout_alignParentEnd="true"
             android:background="@drawable/details_bookmark_selector" />
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relLayout_detailsStub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_detailsStub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/image_not_found"
+            android:theme="@style/TextStubStyle" />
+
+        <TextView
+            android:id="@+id/tv_detailsExplore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_detailsStub"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/btn_click_effect"
+            android:clickable="true"
+            android:text="@string/explore"
+            android:theme="@style/BtnStubStyle" />
+
+    </RelativeLayout>
 </RelativeLayout>
