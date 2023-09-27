@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Environment
 import android.util.Log
+import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,6 +17,7 @@ import com.ivanova.pexelsapp.Model.Exceptions.NoConnectivityException
 import com.ivanova.pexelsapp.Model.Network.FeaturedCollectionsRepository
 import com.ivanova.pexelsapp.Model.Network.Photo
 import com.ivanova.pexelsapp.Model.Network.PhotosRepository
+import com.ivanova.pexelsapp.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -54,6 +56,10 @@ class MainViewModel : ViewModel() {
 
     private val isInBookmarksLiveMutable = MutableLiveData<Boolean>()
     val isInBookmarksLive: LiveData<Boolean> = isInBookmarksLiveMutable
+
+    private val allPhotosFromBookmarksLiveMutable = MutableLiveData<ArrayList<PhotoEntity>>()
+    val allPhotosFromBookmarksLive: LiveData<ArrayList<PhotoEntity>> =
+        allPhotosFromBookmarksLiveMutable
 
     fun loadTitles() {
         viewModelScope.launch {
@@ -146,7 +152,7 @@ class MainViewModel : ViewModel() {
                 BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
 
             val photoPath =
-                savePhotoToAppDir(context, photo.photographer + ".jpeg", bitmap)
+                savePhotoToAppDir(context, photo.id.toString() + ".jpeg", bitmap)
             Database.photoDao.insertPhoto(PhotoEntity(photo.id, photo.photographer, photoPath))
 
             isInBookmarksLiveMutable.postValue(true)
@@ -173,6 +179,13 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun loadAllPhotosFromBookmarks() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val photos = Database.photoDao.getAllPhotos()
+            allPhotosFromBookmarksLiveMutable.postValue(photos as ArrayList<PhotoEntity>?)
+        }
+    }
+
     private fun savePhotoToAppDir(context: Context, imageFile: String, bitmap: Bitmap): String {
         try {
             var appImagesDirPath = context.filesDir.absolutePath + "/images"
@@ -191,7 +204,7 @@ class MainViewModel : ViewModel() {
             outputStream.flush()
             outputStream.close()
 
-            return appImagesDirPath + imageFile
+            return appImagesDirPath + "/" + imageFile
 
         } catch (e: Exception) {
             e.printStackTrace()

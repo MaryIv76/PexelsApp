@@ -107,8 +107,10 @@ class DetailsFragment : Fragment() {
 
         btnBookmark.setOnClickListener {
             if (isInBookmarks) {
+                btnBookmark.setBackgroundResource(R.drawable.details_inactive_bookmark_btn)
                 vm.deletePhotoFromBookmarks(requireContext(), photo)
             } else {
+                btnBookmark.setBackgroundResource(R.drawable.details_active_bookmark_btn)
                 vm.savePhotoToBookmarks(requireContext(), photo)
             }
         }

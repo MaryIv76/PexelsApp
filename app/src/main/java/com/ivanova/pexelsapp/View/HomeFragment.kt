@@ -58,7 +58,7 @@ class HomeFragment : Fragment() {
 
 
         // PROGRESS BAR
-        progressBar.visibility = GONE
+        progressBar.visibility = VISIBLE
 
 
         // TITLES

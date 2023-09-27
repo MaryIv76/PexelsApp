@@ -18,7 +18,14 @@
         android:id="@+id/bookmarksFragment"
         android:name="com.ivanova.pexelsapp.View.BookmarksFragment"
         android:label="@string/bookmark"
-        tools:layout="@layout/fragment_bookmarks" />
+        tools:layout="@layout/fragment_bookmarks" >
+        <action
+            android:id="@+id/action_bookmarksFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+        <action
+            android:id="@+id/action_bookmarksFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/detailsFragment"

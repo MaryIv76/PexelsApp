@@ -11,4 +11,6 @@
     <string name="details">Details</string>
     <string name="download">Download</string>
     <string name="image_not_found">Image not found</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="nothing_saved">You haven\'t saved anything yet</string>
 </resources>

@@ -1,13 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingHorizontal="24dp"
     tools:context=".View.BookmarksFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Bookmark Fragment" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/tv_bookmarks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:text="@string/bookmarks"
+        android:theme="@style/TopBarTextStyle" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_below="@id/tv_bookmarks"
+        android:layout_marginTop="19dp">
+
+        <ProgressBar
+            android:id="@+id/progressBarBookmarks"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:indeterminateOnly="true"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recView_bookmarksPhotos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_bookmarks"
+        android:layout_marginHorizontal="-8dp"
+        android:layout_marginTop="38dp"
+        android:layout_marginBottom="24dp" />
+
+    <RelativeLayout
+        android:id="@+id/relLayout_stubBookmarks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_stubBookmarks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/nothing_saved"
+            android:theme="@style/TextStubStyle" />
+
+        <TextView
+            android:id="@+id/tv_exploreBookmarks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_stubBookmarks"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/btn_click_effect"
+            android:clickable="true"
+            android:text="@string/explore"
+            android:theme="@style/BtnStubStyle" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
