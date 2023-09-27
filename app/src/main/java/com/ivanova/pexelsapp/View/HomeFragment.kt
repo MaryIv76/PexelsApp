@@ -114,7 +114,7 @@ class HomeFragment : Fragment() {
         recViewPhotosAdapter.onItemClick = { photoId ->
             findNavController().navigate(
                 HomeFragmentDirections.actionHomeFragmentToDetailsFragment(
-                    photoId
+                    photoId, "Home"
                 )
             )
         }

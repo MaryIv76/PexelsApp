@@ -31,6 +31,7 @@ import com.bumptech.glide.request.target.Target
 import com.ivanova.pexelsapp.Model.Database.AppDatabase
 import com.ivanova.pexelsapp.Model.Database.PhotoEntity
 import com.ivanova.pexelsapp.Model.Network.Photo
+import com.ivanova.pexelsapp.Model.Network.Src
 import com.ivanova.pexelsapp.R
 import com.ivanova.pexelsapp.ViewModel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -86,7 +87,7 @@ class DetailsFragment : Fragment() {
         hideStub()
 
         // PROGRESS BAR
-        progressBar.visibility = View.VISIBLE
+        progressBar.visibility = VISIBLE
 
 
         // Button back
@@ -150,9 +151,60 @@ class DetailsFragment : Fragment() {
         }
 
 
+        vm.photoBookmarksLive.observe(this) { photo ->
+            this.photo = Photo(
+                photo.id,
+                0,
+                0,
+                "",
+                photo.photographer,
+                "",
+                0,
+                "",
+                Src("", "", "", "", "", "", "", ""),
+                false,
+                ""
+            )
+            vm.isPhotoInBookmarks(this.photo)
+
+            tvPhotographer.text = photo.photographer
+            Glide.with(this)
+                .load(File(photo.photoPath))
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Log.e(ContentValues.TAG, "onLoadFailed")
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        model: Any,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        progressBar.visibility = GONE
+                        return false
+                    }
+                })
+                .into(imViewPhoto)
+        }
+
+
         // Get Photo ID
         val photoId: Int = args.photoId
-        vm.loadPhotoById(photoId)
+        val screenFrom: String = args.screenFrom
+        if (screenFrom == "Home") {
+            vm.loadPhotoById(photoId)
+
+        } else if (screenFrom == "Bookmarks") {
+            vm.loadPhotoByIdFromBookmarks(photoId)
+        }
 
 
         // Button download

@@ -61,6 +61,9 @@ class MainViewModel : ViewModel() {
     val allPhotosFromBookmarksLive: LiveData<ArrayList<PhotoEntity>> =
         allPhotosFromBookmarksLiveMutable
 
+    private val photoBookmarksLiveMutable = MutableLiveData<PhotoEntity>()
+    val photoBookmarksLive: LiveData<PhotoEntity> = photoBookmarksLiveMutable
+
     fun loadTitles() {
         viewModelScope.launch {
             FeaturedCollectionsRepository.getFeaturedCollections(FEATURED_COLLECTIONS_NUMBER)
@@ -183,6 +186,13 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val photos = Database.photoDao.getAllPhotos()
             allPhotosFromBookmarksLiveMutable.postValue(photos as ArrayList<PhotoEntity>?)
+        }
+    }
+
+    fun loadPhotoByIdFromBookmarks(photoId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val photo = Database.photoDao.getPhotoById(photoId)
+            photoBookmarksLiveMutable.postValue(photo)
         }
     }
 

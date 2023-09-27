@@ -48,7 +48,7 @@ class BookmarksFragment : Fragment() {
         recViewPhotosAdapter.onItemClick = { photoId ->
             findNavController().navigate(
                 BookmarksFragmentDirections.actionBookmarksFragmentToDetailsFragment(
-                    photoId
+                    photoId, "Bookmarks"
                 )
             )
         }
