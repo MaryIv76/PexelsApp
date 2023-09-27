@@ -144,6 +144,7 @@ class DetailsFragment : Fragment() {
                         isFirstResource: Boolean
                     ): Boolean {
                         progressBar.visibility = GONE
+                        relLayoutBottom.visibility = VISIBLE
                         return false
                     }
                 })
@@ -189,6 +190,7 @@ class DetailsFragment : Fragment() {
                         isFirstResource: Boolean
                     ): Boolean {
                         progressBar.visibility = GONE
+                        relLayoutBottom.visibility = VISIBLE
                         return false
                     }
                 })
@@ -231,7 +233,7 @@ class DetailsFragment : Fragment() {
                         val imageData = url.readBytes()
                         val bitmap: Bitmap =
                             BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
-                        saveImageToDownloadFolder(photo.photographer + ".jpeg", bitmap)
+                        saveImageToDownloadFolder(photo.id.toString() + ".jpeg", bitmap)
                     }
                 }
             }
@@ -300,7 +302,6 @@ class DetailsFragment : Fragment() {
     private fun hideStub() {
         relLayoutStub.visibility = GONE
 
-        relLayoutBottom.visibility = VISIBLE
         tvPhotographer.visibility = VISIBLE
         cardViewPhoto.visibility = VISIBLE
         progressBar.visibility = VISIBLE
