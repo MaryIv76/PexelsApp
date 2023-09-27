@@ -9,14 +9,15 @@ import android.widget.*
 import android.widget.SearchView.OnQueryTextListener
 import android.widget.Toast.LENGTH_LONG
 import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.ivanova.pexelsapp.Model.RetrofitInstance
+import com.ivanova.pexelsapp.Model.Database.Database
+import com.ivanova.pexelsapp.Model.Network.RetrofitInstance
 import com.ivanova.pexelsapp.R
 import com.ivanova.pexelsapp.View.RecyclerViews.PhotosRecyclerViewAdapter
 import com.ivanova.pexelsapp.View.RecyclerViews.TitleItemDecoration
@@ -35,6 +36,7 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         RetrofitInstance.Companion.setContext(requireContext())
+        Database.Companion.setApplicationContext(requireActivity().applicationContext)
 
         vm = ViewModelProvider(this).get(MainViewModel::class.java)
     }
@@ -56,7 +58,7 @@ class HomeFragment : Fragment() {
 
 
         // PROGRESS BAR
-        progressBar.visibility = GONE
+        progressBar.visibility = VISIBLE
 
 
         // TITLES
@@ -68,7 +70,6 @@ class HomeFragment : Fragment() {
         recViewTitles.addItemDecoration(TitleItemDecoration(titleItemMargin))
 
         recViewTitlesAdapter.onItemClick = { title ->
-            //vm.findPhotos(title)
             searchView.setQuery(title, true)
         }
 
@@ -110,6 +111,14 @@ class HomeFragment : Fragment() {
         )
         recViewPhotos.adapter = recViewPhotosAdapter
 
+        recViewPhotosAdapter.onItemClick = { photoId ->
+            findNavController().navigate(
+                HomeFragmentDirections.actionHomeFragmentToDetailsFragment(
+                    photoId, "Home"
+                )
+            )
+        }
+
         recViewPhotosAdapter.isAllItemsVisibleLive.observe(this) { isAllItemsVisible ->
             if (isAllItemsVisible) {
                 progressBar.visibility = GONE
@@ -127,7 +136,10 @@ class HomeFragment : Fragment() {
                 stubLayout.visibility = GONE
             }
         }
-        vm.loadCuratedPhotos()
+
+        if (vm.currentSearchRequestLive.value == null || vm.currentSearchRequestLive.value.toString() == "") {
+            vm.loadCuratedPhotos()
+        }
 
 
         // SEARCH
@@ -139,7 +151,7 @@ class HomeFragment : Fragment() {
 
                 textChangedJob = lifecycleScope.launch {
                     delay(1500L)
-                    if (newText != null) {
+                    if (newText != null && newText != "") {
                         vm.findPhotos(newText)
                     }
                 }
@@ -151,7 +163,7 @@ class HomeFragment : Fragment() {
                     textChangedJob.cancel()
                 }
 
-                if (query != null) {
+                if (query != null && query != "") {
                     vm.findPhotos(query)
                 }
                 searchView.clearFocus()

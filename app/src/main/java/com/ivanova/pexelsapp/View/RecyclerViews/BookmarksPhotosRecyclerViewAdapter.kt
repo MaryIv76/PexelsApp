@@ -1,28 +1,36 @@
 package com.ivanova.pexelsapp.View.RecyclerViews
 
-import android.content.ContentValues.TAG
+import android.content.ContentValues
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.ivanova.pexelsapp.Model.Database.PhotoEntity
 import com.ivanova.pexelsapp.Model.Network.Photo
 import com.ivanova.pexelsapp.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
 
-class PhotosRecyclerViewAdapter(private val context: Context) :
-    RecyclerView.Adapter<PhotosRecyclerViewAdapter.MyViewHolder>() {
+class BookmarksPhotosRecyclerViewAdapter(private val context: Context) :
+    RecyclerView.Adapter<BookmarksPhotosRecyclerViewAdapter.MyViewHolder>() {
 
-    private var photos: List<Photo> = listOf()
+    private var photos: ArrayList<PhotoEntity> = arrayListOf()
     private var counter: Int = 0
 
     private val isAllItemsVisibleLiveMutable = MutableLiveData<Boolean>(false)
@@ -30,7 +38,7 @@ class PhotosRecyclerViewAdapter(private val context: Context) :
 
     var onItemClick: ((Int) -> Unit)? = null
 
-    fun setPhotos(photos: List<Photo>) {
+    fun setPhotos(photos: ArrayList<PhotoEntity>) {
         this.photos = photos
         this.counter = 0
         isAllItemsVisibleLiveMutable.postValue(this.photos.size == this.counter)
@@ -40,8 +48,8 @@ class PhotosRecyclerViewAdapter(private val context: Context) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView =
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.photo_item_home_screen, parent, false)
-        return MyViewHolder(itemView)
+                .inflate(R.layout.photo_item_bookmarks_screen, parent, false)
+        return BookmarksPhotosRecyclerViewAdapter.MyViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -49,8 +57,9 @@ class PhotosRecyclerViewAdapter(private val context: Context) :
             onItemClick?.invoke(photos[position].id)
         }
 
+        holder.tvPhotographer.text = photos[position].photographer
         Glide.with(context)
-            .load(photos[position].src.original)
+            .load(File(photos[position].photoPath))
             .placeholder(R.drawable.placeholder)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
@@ -59,7 +68,7 @@ class PhotosRecyclerViewAdapter(private val context: Context) :
                     target: Target<Drawable>,
                     isFirstResource: Boolean
                 ): Boolean {
-                    Log.e(TAG, "onLoadFailed")
+                    Log.e(ContentValues.TAG, "onLoadFailed")
                     return false
                 }
 
@@ -85,6 +94,7 @@ class PhotosRecyclerViewAdapter(private val context: Context) :
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imViewPhoto: ImageView = itemView.findViewById(R.id.imView_photoHome)
+        val imViewPhoto: ImageView = itemView.findViewById(R.id.imView_photoBookmarks)
+        val tvPhotographer: TextView = itemView.findViewById(R.id.tv_photographerBookmarks)
     }
 }
