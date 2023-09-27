@@ -1,9 +1,8 @@
-package com.ivanova.pexelsapp.Model
+package com.ivanova.pexelsapp.Model.Network
 
 import com.ivanova.pexelsapp.Utils.Constants.HEADER
 import retrofit2.http.GET
 import retrofit2.http.Headers
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface FeaturedCollectionsApi {

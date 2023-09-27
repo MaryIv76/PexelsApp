@@ -1,4 +1,4 @@
-package com.ivanova.pexelsapp.Model
+package com.ivanova.pexelsapp.Model.Network
 
 import com.google.gson.annotations.SerializedName
 

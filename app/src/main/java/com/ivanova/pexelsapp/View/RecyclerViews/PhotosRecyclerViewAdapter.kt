@@ -11,13 +11,12 @@ import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.ivanova.pexelsapp.Model.Photo
+import com.ivanova.pexelsapp.Model.Network.Photo
 import com.ivanova.pexelsapp.R
 
 class PhotosRecyclerViewAdapter(private val context: Context) :

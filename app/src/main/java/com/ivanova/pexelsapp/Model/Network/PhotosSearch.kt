@@ -1,8 +1,10 @@
-package com.ivanova.pexelsapp.Model
+package com.ivanova.pexelsapp.Model.Network
 
 import com.google.gson.annotations.SerializedName
 
-data class Photos(
+data class PhotosSearch(
+    @SerializedName("total_results")
+    val totalResults: Int,
     val page: Int,
     @SerializedName("per_page")
     val perPage: Int,

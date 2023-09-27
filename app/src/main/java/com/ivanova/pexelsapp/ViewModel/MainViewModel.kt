@@ -1,18 +1,29 @@
 package com.ivanova.pexelsapp.ViewModel
 
 import android.content.ContentValues.TAG
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivanova.pexelsapp.Model.Database.Database
+import com.ivanova.pexelsapp.Model.Database.PhotoEntity
 import com.ivanova.pexelsapp.Model.Exceptions.NoConnectivityException
-import com.ivanova.pexelsapp.Model.FeaturedCollectionsRepository
-import com.ivanova.pexelsapp.Model.Photo
-import com.ivanova.pexelsapp.Model.PhotosRepository
+import com.ivanova.pexelsapp.Model.Network.FeaturedCollectionsRepository
+import com.ivanova.pexelsapp.Model.Network.Photo
+import com.ivanova.pexelsapp.Model.Network.PhotosRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
+import java.net.URL
 
 class MainViewModel : ViewModel() {
 
@@ -40,6 +51,9 @@ class MainViewModel : ViewModel() {
 
     private val photoDetailsLiveMutable = MutableLiveData<Photo>()
     val photoDetailsLive: LiveData<Photo> = photoDetailsLiveMutable
+
+    private val isInBookmarksLiveMutable = MutableLiveData<Boolean>()
+    val isInBookmarksLive: LiveData<Boolean> = isInBookmarksLiveMutable
 
     fun loadTitles() {
         viewModelScope.launch {
@@ -121,6 +135,67 @@ class MainViewModel : ViewModel() {
                 someNetworkErrorLiveMutable.postValue(true)
                 Log.d(TAG, "Exception: " + exception.message)
             }
+        }
+    }
+
+    fun savePhotoToBookmarks(context: Context, photo: Photo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val url = URL(photo.src.original)
+            val imageData = url.readBytes()
+            val bitmap: Bitmap =
+                BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
+
+            val photoPath =
+                savePhotoToAppDir(context, photo.photographer + ".jpeg", bitmap)
+            Database.photoDao.insertPhoto(PhotoEntity(photo.id, photo.photographer, photoPath))
+
+            isInBookmarksLiveMutable.postValue(true)
+        }
+    }
+
+    fun deletePhotoFromBookmarks(context: Context, photo: Photo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            var photoPath = context.filesDir.absolutePath + "/images" + photo.photographer + ".jpeg"
+            Database.photoDao.deletePhoto(PhotoEntity(photo.id, photo.photographer, photoPath))
+
+            isInBookmarksLiveMutable.postValue(false)
+        }
+    }
+
+    fun isPhotoInBookmarks(photo: Photo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val photo = Database.photoDao.getPhotoById(photo.id)
+            if (photo == null) {
+                isInBookmarksLiveMutable.postValue(false)
+            } else {
+                isInBookmarksLiveMutable.postValue(true)
+            }
+        }
+    }
+
+    private fun savePhotoToAppDir(context: Context, imageFile: String, bitmap: Bitmap): String {
+        try {
+            var appImagesDirPath = context.filesDir.absolutePath + "/images"
+
+            val appImagesDir = File(appImagesDirPath)
+            if (!appImagesDir.exists()) {
+                appImagesDir.mkdirs()
+            }
+
+            val filePath = File(
+                appImagesDirPath,
+                imageFile
+            )
+            val outputStream: OutputStream = FileOutputStream(filePath)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+
+            return appImagesDirPath + imageFile
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return ""
         }
     }
 }

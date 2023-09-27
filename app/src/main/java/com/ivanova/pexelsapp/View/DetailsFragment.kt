@@ -22,12 +22,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.ivanova.pexelsapp.Model.Photo
+import com.ivanova.pexelsapp.Model.Database.AppDatabase
+import com.ivanova.pexelsapp.Model.Database.PhotoEntity
+import com.ivanova.pexelsapp.Model.Network.Photo
 import com.ivanova.pexelsapp.R
 import com.ivanova.pexelsapp.ViewModel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -51,6 +54,8 @@ class DetailsFragment : Fragment() {
     private lateinit var cardViewPhoto: CardView
     private lateinit var tvPhotographer: TextView
     private lateinit var relLayoutStub: RelativeLayout
+
+    private var isInBookmarks: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,9 +95,30 @@ class DetailsFragment : Fragment() {
         }
 
 
+        // Button bookmark
+        vm.isInBookmarksLive.observe(this) {
+            isInBookmarks = it
+            if (isInBookmarks) {
+                btnBookmark.setBackgroundResource(R.drawable.details_active_bookmark_btn)
+            } else {
+                btnBookmark.setBackgroundResource(R.drawable.details_inactive_bookmark_btn)
+            }
+        }
+
+        btnBookmark.setOnClickListener {
+            if (isInBookmarks) {
+                vm.deletePhotoFromBookmarks(requireContext(), photo)
+            } else {
+                vm.savePhotoToBookmarks(requireContext(), photo)
+            }
+        }
+
+
         // Load photo and photographer
         vm.photoDetailsLive.observe(this) { photo ->
             this.photo = photo
+            vm.isPhotoInBookmarks(photo)
+
             tvPhotographer.text = photo.photographer
             Glide.with(this)
                 .load(photo.src.original)
@@ -196,7 +222,7 @@ class DetailsFragment : Fragment() {
                 Toast.makeText(
                     requireContext(),
                     "$imageFile was successfully saved in Download Folder",
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_LONG
                 ).show()
             }
         } catch (e: Exception) {

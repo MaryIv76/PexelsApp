@@ -1,4 +1,4 @@
-package com.ivanova.pexelsapp.Model
+package com.ivanova.pexelsapp.Model.Network
 
 import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE

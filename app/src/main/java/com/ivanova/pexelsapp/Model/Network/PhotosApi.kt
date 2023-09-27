@@ -1,4 +1,4 @@
-package com.ivanova.pexelsapp.Model
+package com.ivanova.pexelsapp.Model.Network
 
 import com.ivanova.pexelsapp.Utils.Constants.HEADER
 import retrofit2.http.GET

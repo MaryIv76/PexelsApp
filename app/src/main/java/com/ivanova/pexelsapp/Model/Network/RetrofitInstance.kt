@@ -1,4 +1,4 @@
-package com.ivanova.pexelsapp.Model
+package com.ivanova.pexelsapp.Model.Network
 
 import android.content.Context
 import com.ivanova.pexelsapp.Utils.Constants.BASE_URL
@@ -11,7 +11,7 @@ class RetrofitInstance {
         private lateinit var context: Context
 
         fun setContext(context: Context) {
-            this.context = context
+            Companion.context = context
         }
 
         private val okHttpClient by lazy {
