@@ -30,8 +30,8 @@ import java.net.URL
 class MainViewModel : ViewModel() {
 
     private val FEATURED_COLLECTIONS_NUMBER = 7
-    private val CURATED_PHOTOS_NUMBER = 5
-    private val SEARCH_PHOTOS_NUMBER = 5
+    private val CURATED_PHOTOS_NUMBER = 30
+    private val SEARCH_PHOTOS_NUMBER = 30
 
     private val noInternetConnectionLiveMutable = MutableLiveData(false)
     val noInternetConnectionLive: LiveData<Boolean> = noInternetConnectionLiveMutable
