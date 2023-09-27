@@ -64,6 +64,9 @@ class MainViewModel : ViewModel() {
     private val photoBookmarksLiveMutable = MutableLiveData<PhotoEntity>()
     val photoBookmarksLive: LiveData<PhotoEntity> = photoBookmarksLiveMutable
 
+    private val photoUrlLiveMutable = MutableLiveData<String>()
+    val photoUrlLive: LiveData<String> = photoUrlLiveMutable
+
     fun loadTitles() {
         viewModelScope.launch {
             FeaturedCollectionsRepository.getFeaturedCollections(FEATURED_COLLECTIONS_NUMBER)
@@ -126,6 +129,18 @@ class MainViewModel : ViewModel() {
                 }
                 .collect { photo ->
                     photoDetailsLiveMutable.postValue(photo)
+                }
+        }
+    }
+
+    fun loadPhotoUrlById(photoId: Int) {
+        viewModelScope.launch {
+            PhotosRepository.getPhotoById(photoId)
+                .catch { exception ->
+                    handleExceptions(exception as Exception)
+                }
+                .collect { photo ->
+                    photoUrlLiveMutable.postValue(photo.src.original)
                 }
         }
     }

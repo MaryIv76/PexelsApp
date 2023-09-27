@@ -210,6 +210,16 @@ class DetailsFragment : Fragment() {
 
 
         // Button download
+        vm.photoUrlLive.observe(this) { photoUrl ->
+            CoroutineScope(Dispatchers.IO).launch {
+                val url = URL(photoUrl)
+                val imageData = url.readBytes()
+                val bitmap: Bitmap =
+                    BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
+                saveImageToDownloadFolder(photo.id.toString() + ".jpeg", bitmap)
+            }
+        }
+
         btnDownload.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
                     requireActivity(),
@@ -229,11 +239,16 @@ class DetailsFragment : Fragment() {
                             progressBar.visibility = VISIBLE
                         }
 
-                        val url = URL(photo.src.original)
-                        val imageData = url.readBytes()
-                        val bitmap: Bitmap =
-                            BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
-                        saveImageToDownloadFolder(photo.id.toString() + ".jpeg", bitmap)
+                        if (args.screenFrom == "Bookmarks") {
+                            vm.loadPhotoUrlById(args.photoId)
+                        } else {
+                            val url = URL(photo.src.original)
+                            val imageData = url.readBytes()
+                            val bitmap: Bitmap =
+                                BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
+
+                            saveImageToDownloadFolder(photo.id.toString() + ".jpeg", bitmap)
+                        }
                     }
                 }
             }
