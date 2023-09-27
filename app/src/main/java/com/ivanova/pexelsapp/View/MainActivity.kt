@@ -3,6 +3,7 @@ package com.ivanova.pexelsapp.View
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -14,6 +15,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Thread.sleep(1000)
+        installSplashScreen()
+
         setContentView(R.layout.activity_main)
 
         bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)

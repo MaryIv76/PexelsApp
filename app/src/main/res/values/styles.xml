@@ -47,4 +47,10 @@
     <style name="RoundedSquarePhoto">
         <item name="cornerSize">20dp</item>
     </style>
+
+    <style name="Theme.PexelsApp.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/red</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.PexelsApp</item>
+    </style>
 </resources>
